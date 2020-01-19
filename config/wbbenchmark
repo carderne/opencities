@@ -1,0 +1,9 @@
+[AWS_BATCH]
+job_queue=RasterVisionGpuJobQueue
+job_definition=RasterVisionHostedPyTorchGpuJobDefinition
+cpu_job_queue=RasterVisionCpuJobQueue
+cpu_job_definition=RasterVisionHostedPyTorchCpuJobDefinition
+attempts=1
+
+[PLUGINS]
+files=s3://carderne-rv/benchmark/preprocess.py,s3://carderne-rv/benchmark/postprocess.py
