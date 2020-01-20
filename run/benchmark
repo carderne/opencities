@@ -8,7 +8,7 @@ export TEST_STAC_URI=/opt/data/test/catalog.json
 export TEST_IMG_DIR=s3://drivendata-competition-building-segmentation/test/
 
 rastervision -p wbbenchmark run aws_batch -x -r -s 10 -e benchmark.experiments.benchmark \
-    chip train predict eval bundle \
+    chip train predict eval bundle POSTPROCESS \
     -a experiment_id $EXPERIMENT_ID \
     -a root_uri $ROOT_URI \
     -a train_stac_uri $TRAIN_STAC_URI \

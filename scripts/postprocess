@@ -1,5 +1,0 @@
-#!/bin/bash
-
-export ROOT_URI=s3://carderne-rv/
-
-rastervision -p wbbenchmark run aws_batch -s 8 -e benchmark.experiments.split_images POSTPROCESS -a root_uri $ROOT_URI

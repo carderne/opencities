@@ -80,7 +80,7 @@ then
         -v "${REPO_ROOT}"/config:/root/.rastervision \
         -v "${REPO_ROOT}"/benchmark:/opt/src/benchmark \
     	-v "${REPO_ROOT}"/data:/opt/data \
-        -v "${REPO_ROOT}"/wb_scripts:/opt/src/wb_scripts \
+        -v "${REPO_ROOT}"/run:/opt/src/run \
         ${TENSORBOARD} ${AWS} ${DEBUG} \
         ${IMAGE} "${CMD[@]}"
 fi
