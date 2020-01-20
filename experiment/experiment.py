@@ -4,9 +4,9 @@ from os.path import basename, dirname, join
 from random import sample
 
 import rastervision as rv
-from benchmark.constants import CLASSES, TRAIN_IDS, VALID_IDS
-from benchmark.io import my_read_method, my_write_method
-from benchmark.utils import str_to_bool
+from .constants import CLASSES, TRAIN_IDS, VALID_IDS
+from .io import my_read_method, my_write_method
+from .utils import str_to_bool
 from pystac import STAC_IO, Catalog
 from rastervision.backend.api import PYTORCH_SEMANTIC_SEGMENTATION
 from rastervision.utils.files import file_exists
