@@ -27,8 +27,8 @@ Split training scenes into smaller files to fit into memory.
 ./scripts/preprocess
 ```
 
-## Train
-The model training and prediction configuration is located in `benchmark/experiments/benchmark.py`.This will submit a series of jobs to AWS Batch and print out a summary of each, complete with an outline of which task must finish before the job in question can start. If you would like to first do a 'dry run' (i.e. see the aforementioned output without actually submitting any jobs), add `-n` to the end of the command. Use the 'test' flag (`-a test True`) to run an experiment on a small subset of the data and with very short training times. This will not yield useful predictions but may be helpful to make sure everything is configured correctly before trying to run the full experiment.
+## Train, predict & postprocess
+The model training and prediction configuration is located in `benchmark/experiments/benchmark.py`.This will submit a series of jobs to AWS Batch and print out a summary of each, complete with an outline of which task must finish before the job in question can start. If you would like to first do a 'dry run' (i.e. see the aforementioned output without actually submitting any jobs), add `-n` to the end of the command. Use the 'test' flag (`-a test True`) to run an experiment on a small subset of the data and with very short training times. This will not yield useful predictions but may be helpful to make sure everything is configured correctly before trying to run the full experiment. This includes a step to convert `2` (used by rv for background) to `0` (used by competition rules).
 ```
 ./scripts/benchmark
 ```
@@ -36,8 +36,9 @@ The model training and prediction configuration is located in `benchmark/experim
 ## Evaluate
 The training stage should take roughly 9 hours running on batch. Once training is done, prediction, postprocessing and evaluation will complete shortly after. You can see how the model performed on the validation set by looking at the output of eval (`<root_uri>/eval/<experiment_id>/eval.json`). You can also view predictions (`<root_uri>/predict/<experiment_id>/<scene id>.tif`) and compare to the original images.
 
-## Postprocess
-Raster-vision uses `2` for background pixels, need to convert to `0` to match OpenCities requirements.
+## Submit
+Download from S3 and then tar and submit:
 ```
-./scripts/postprocess
+aws s3 cp s3://carderne-rv/postprocess/benchmark1/ . --profile rv --recursive
+tar -cvzf submission.tgz *
 ```
