@@ -78,7 +78,7 @@ if [ "${BASH_SOURCE[0]}" = "${0}" ]
 then
     docker run ${RUNTIME} ${NAME} --rm -it \
         -v "${REPO_ROOT}"/config:/root/.rastervision \
-        -v "${REPO_ROOT}"/benchmark:/opt/src/benchmark \
+        -v "${REPO_ROOT}"/experiment:/opt/src/experiment \
     	-v "${REPO_ROOT}"/data:/opt/data \
         -v "${REPO_ROOT}"/run:/opt/src/run \
         ${TENSORBOARD} ${AWS} ${DEBUG} \

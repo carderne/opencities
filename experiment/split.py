@@ -7,11 +7,10 @@ from .constants import TRAIN_IDS, VALID_IDS
 
 
 class SplitImages(rv.ExperimentSet):
-    def exp_split_images(self, root_uri, train_stac_uri):
-        split_dir = join(root_uri, "split_images")
+    def exp_split(self, root_uri, train_stac_uri, split_dir):
         image_ids = TRAIN_IDS + VALID_IDS
         image_uris = [
-            join(dirname(train_stac_uri), area, uid, "{}.tif".format(uid))
+            join(dirname(train_stac_uri), area, uid, f"{uid}.tif")
             for area, uid in image_ids
         ]
 

@@ -1,0 +1,18 @@
+#!/bin/bash
+
+export EXPERIMENT_ID=benchmark1
+export ROOT_URI=/opt/data/scratch/
+export TRAIN_STAC_URI=/opt/data/train_tier_1/catalog.json
+export TRAIN_IMG_DIR=/opt/data/train_tier_1/
+export TEST_STAC_URI=/opt/data/test/catalog.json
+export TEST_IMG_DIR=/opt/data/test/
+
+rastervision -p test run  local -n -x -r -s 10 -e experiment.experiment \
+    chip train predict bundle POSTPROCESS \
+    -a experiment_id $EXPERIMENT_ID \
+    -a root_uri $ROOT_URI \
+    -a train_stac_uri $TRAIN_STAC_URI \
+    -a test_stac_uri $TEST_STAC_URI \
+    -a train_img_dir $TRAIN_IMG_DIR \
+    -a test_img_dir $TEST_IMG_DIR \
+    -a test True

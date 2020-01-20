@@ -40,7 +40,7 @@ class PostProcessCommand(rv.AuxCommand):
     def run(self):
         root_uri = self.command_config.get("root_uri")
         experiment_id = self.command_config.get("experiment_id")
-        postprocess_dir = "/opt/data/postprocess/{}/".format(experiment_id)
+        postprocess_dir = f"/opt/data/postprocess/{experiment_id}/"
         if not isdir(postprocess_dir):
             os.makedirs(postprocess_dir)
 

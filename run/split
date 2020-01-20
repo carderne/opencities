@@ -1,0 +1,11 @@
+#!/bin/bash
+
+export ROOT_URI=s3://carderne-rv/
+export TEST_STAC_URI=/opt/data/test/catalog.json
+export TRAIN_IMG_DIR=s3://carderne-rv/split/
+
+rastervision run aws_batch -s 8 -e experiment.split \
+    PREPROCESS \
+    -a root_uri $ROOT_URI \
+    -a train_stac_uri $TRAIN_STAC_URI \
+    -a split_dir $TRAIN_IMG_DIR \

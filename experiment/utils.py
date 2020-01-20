@@ -34,5 +34,5 @@ def str_to_bool(x):
         elif x.lower() == "false":
             return False
         else:
-            raise ValueError("{} is expected to be true or false".format(x))
+            raise ValueError(f"{x} is expected to be true or false")
     return x

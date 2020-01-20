@@ -4,7 +4,7 @@ Based on: [Open Cities AI Challenge Benchmark Model](https://github.com/azavea/o
 AWS setup: [Raster Vision AWS repo](https://github.com/azavea/raster-vision-aws)
 
 ## Setup
-Build the Docker image. This will create a local Docker image called 'raster-vision-wb-africa' that includes the code within the `benchmark` module, which you will need to run this experiment.
+Build the Docker image. This will create a local Docker image called 'raster-vision-wb-africa' that includes the code within the `experiment` module, which you will need to run this experiment.
 ```
 ./docker/build
 ```
@@ -24,13 +24,19 @@ Run the Docker container with the `run` script:
 ## Preprocess
 Split training scenes into smaller files to fit into memory.
 ```
-./scripts/preprocess
+./run/split
+```
+
+## Test
+Test a subset of the imagery on local machine:
+```
+./run/test
 ```
 
 ## Train, predict & postprocess
-The model training and prediction configuration is located in `benchmark/experiments/benchmark.py`.This will submit a series of jobs to AWS Batch and print out a summary of each, complete with an outline of which task must finish before the job in question can start. If you would like to first do a 'dry run' (i.e. see the aforementioned output without actually submitting any jobs), add `-n` to the end of the command. Use the 'test' flag (`-a test True`) to run an experiment on a small subset of the data and with very short training times. This will not yield useful predictions but may be helpful to make sure everything is configured correctly before trying to run the full experiment. This includes a step to convert `2` (used by rv for background) to `0` (used by competition rules).
+The model training and prediction configuration is located in `experiment/experiment.py`.This will submit a series of jobs to AWS Batch and print out a summary of each, complete with an outline of which task must finish before the job in question can start. If you would like to first do a 'dry run' (i.e. see the aforementioned output without actually submitting any jobs), add `-n` to the end of the command. Use the 'test' flag (`-a test True`) to run an experiment on a small subset of the data and with very short training times. This will not yield useful predictions but may be helpful to make sure everything is configured correctly before trying to run the full experiment. This includes a step to convert `2` (used by rv for background) to `0` (used by competition rules).
 ```
-./scripts/benchmark
+./run/batch
 ```
 
 ## Evaluate

@@ -15,7 +15,7 @@ STAC_IO.write_text_method = my_write_method
 
 
 class BenchmarkExperiment(rv.ExperimentSet):
-    def exp_benchmark(
+    def exp_experiment(
         self,
         experiment_id,
         root_uri,
@@ -27,7 +27,6 @@ class BenchmarkExperiment(rv.ExperimentSet):
     ):
 
         test = str_to_bool(test)
-
         train_ids = TRAIN_IDS
         valid_ids = VALID_IDS
 
@@ -70,21 +69,14 @@ class BenchmarkExperiment(rv.ExperimentSet):
         def make_train_scenes(item):
             area = item.get_parent().id
             label_uri = join(
-                dirname(train_stac_uri),
-                area,
-                "{}-labels".format(item.id),
-                "{}.geojson".format(item.id),
+                dirname(train_stac_uri), area, f"{item.id}-labels", f"{item.id}.geojson"
             )
 
             i = 0
             images_remaining = True
             scenes = []
             while images_remaining:
-                print(i)
-                raster_uri = join(
-                    train_img_dir, area, item.id, "{}_{}.tif".format(item.id, i)
-                )
-
+                raster_uri = join(train_img_dir, area, item.id, f"{item.id}_{i}.tif")
                 if file_exists(raster_uri):
                     raster_source = (
                         rv.RasterSourceConfig.builder(rv.RASTERIO_SOURCE)
@@ -92,24 +84,21 @@ class BenchmarkExperiment(rv.ExperimentSet):
                         .with_channel_order([0, 1, 2])
                         .build()
                     )
-
                     label_raster_source = (
                         rv.RasterSourceConfig.builder(rv.RASTERIZED_SOURCE)
                         .with_vector_source(label_uri)
                         .with_rasterizer_options(2)
                         .build()
                     )
-
                     label_source = (
                         rv.LabelSourceConfig.builder(rv.SEMANTIC_SEGMENTATION)
                         .with_raster_source(label_raster_source)
                         .build()
                     )
-
                     scene = (
                         rv.SceneConfig.builder()
                         .with_task(task)
-                        .with_id("{}_{}".format(item.id, i))
+                        .with_id(f"{item.id}_{i}")
                         .with_raster_source(raster_source)
                         .with_label_source(label_source)
                         .build()
@@ -122,16 +111,13 @@ class BenchmarkExperiment(rv.ExperimentSet):
             return scenes
 
         def make_test_scene(item):
-            print(item)
-            raster_uri = join(test_img_dir, item.id, "{}.tif".format(item.id))
-
+            raster_uri = join(test_img_dir, item.id, f"{item.id}.tif")
             raster_source = (
                 rv.RasterSourceConfig.builder(rv.RASTERIO_SOURCE)
                 .with_uri(raster_uri)
                 .with_channel_order([0, 1, 2])
                 .build()
             )
-
             scene = (
                 rv.SceneConfig.builder()
                 .with_id(item.id)
@@ -176,7 +162,8 @@ class BenchmarkExperiment(rv.ExperimentSet):
             ],
         )
         # Take random sample of validation scenes
-        valid_scenes = sample(valid_scenes, 30)
+        if len(valid_scenes) > 30:
+            valid_scenes = sample(valid_scenes, 30)
 
         print("Creating test scenes")
         test_scenes = [make_test_scene(item) for item in all_test_items]
@@ -201,12 +188,7 @@ class BenchmarkExperiment(rv.ExperimentSet):
                 "key": "postprocess",
                 "config": {
                     "uris": [
-                        join(
-                            root_uri,
-                            "predict",
-                            experiment_id,
-                            "{}.tif".format(scene.id),
-                        )
+                        join(root_uri, "predict", experiment_id, f"{scene.id}.tif")
                         for scene in test_scenes
                     ],
                     "root_uri": root_uri,

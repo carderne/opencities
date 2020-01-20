@@ -44,9 +44,7 @@ def split_image(image_uri, split_dir):
         if np.max(img[-1]) == 255:
             area = image_uri.split("/")[-3]
             image_id = image_uri.split("/")[-2]
-            output_uri = join(
-                split_dir, area, image_id, "{}_{}.tif".format(image_id, i)
-            )
+            output_uri = join(split_dir, area, image_id, f"{image_id}_{i}.tif")
             kwargs.update(
                 {"height": win.height, "width": win.width, "transform": win_transform}
             )

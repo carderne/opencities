@@ -6,4 +6,4 @@ cpu_job_definition=RasterVisionHostedPyTorchCpuJobDefinition
 attempts=1
 
 [PLUGINS]
-files=s3://carderne-rv/benchmark/preprocess.py,s3://carderne-rv/benchmark/postprocess.py
+files=s3://carderne-rv/plugins/preprocess.py,s3://carderne-rv/plugins/postprocess.py
