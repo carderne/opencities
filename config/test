@@ -1,2 +1,2 @@
 [PLUGINS]
-files=experiment/preprocess.py,experiment/postprocess.py
+files=/opt/src/experiment/preprocess.py,/opt/src/experiment/postprocess.py

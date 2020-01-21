@@ -7,7 +7,7 @@ export TRAIN_IMG_DIR=s3://carderne-rv/split/
 export TEST_STAC_URI=/opt/data/test/catalog.json
 export TEST_IMG_DIR=s3://drivendata-competition-building-segmentation/test/
 
-rastervision run aws_batch -x -r -s 10 -e experiment.experiment \
+rastervision -p batch run aws_batch -x -r -s 10 -e experiment.experiment \
     chip train predict bundle POSTPROCESS \
     -a experiment_id $EXPERIMENT_ID \
     -a root_uri $ROOT_URI \
