@@ -1,0 +1,3 @@
+#!/bin/bash
+cd ./experiment/
+aws s3 sync ./ s3://carderne-rv/plugins/ --delete --profile rv --exclude "*__pycache__/*"
