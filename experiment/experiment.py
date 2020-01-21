@@ -7,7 +7,7 @@ from pystac import STAC_IO, Catalog
 from rastervision.backend.api import PYTORCH_SEMANTIC_SEGMENTATION
 from rastervision.utils.files import file_exists
 
-from .constants import CLASSES, TRAIN_IDS, VALID_IDS
+from .constants import TRAIN_IDS, VALID_IDS
 from .utils import str_to_bool, my_read_method, my_write_method
 
 STAC_IO.read_text_method = my_read_method
@@ -127,10 +127,11 @@ class BenchmarkExperiment(rv.ExperimentSet):
 
             return scene
 
+        classes = {"No Building": (2, "#ff00ff"), "Building": (1, "#e6194b")}
         # Configure the semantic segmentation task
         task = (
             rv.TaskConfig.builder(rv.SEMANTIC_SEGMENTATION)
-            .with_classes(CLASSES)
+            .with_classes(classes)
             .with_chip_options(**chip_opts)
             .build()
         )
