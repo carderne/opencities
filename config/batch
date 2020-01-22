@@ -1,9 +1,9 @@
 [AWS_BATCH]
 job_queue=RasterVisionGpuJobQueue
-job_definition=RasterVisionHostedPyTorchGpuJobDefinition
+job_definition=RasterVisionCustomPyTorchGpuJobDefinition
 cpu_job_queue=RasterVisionCpuJobQueue
-cpu_job_definition=RasterVisionHostedPyTorchCpuJobDefinition
+cpu_job_definition=RasterVisionCustomPyTorchCpuJobDefinition
 attempts=1
 
 [PLUGINS]
-files=s3://carderne-rv/plugins/preprocess.py,s3://carderne-rv/plugins/postprocess.py,s3://carderne-rv/plugins/zip.py
+files=s3://carderne-rv/plugins/preprocess.py,s3://carderne-rv/plugins/postprocess.py,s3://carderne-rv/plugins/zip.py,s3://carderne-rv/plugins/noop.py

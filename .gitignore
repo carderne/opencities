@@ -2,6 +2,7 @@
 data/
 config/plugins/
 aws/
+research/ignore/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

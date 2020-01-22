@@ -35,4 +35,7 @@ elif [ $1 = "test" ]; then
         -a train_img_dir /opt/data/split/ \
         -a test_img_dir /opt/data/test/ \
         -a test True
+elif [ $1 = "noop" ]; then
+    rastervision -p batch run aws_batch -x -e experiment.noop \
+        NOOP
 fi

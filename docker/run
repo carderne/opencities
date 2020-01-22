@@ -30,7 +30,7 @@ All arguments after above options are passed to 'docker run'.
 "
 }
 
-IMAGE="raster-vision-wb-africa"
+IMAGE="raster-vision-pytorch-custom"
 
 # Parse options using scheme in
 # https://stackoverflow.com/questions/192249/how-do-i-parse-command-line-arguments-in-bash
@@ -80,7 +80,8 @@ then
         -v "${REPO_ROOT}"/config:/root/.rastervision \
         -v "${REPO_ROOT}"/experiment:/opt/src/experiment \
     	-v "${REPO_ROOT}"/data:/opt/data \
-        -v "${REPO_ROOT}"/run:/opt/src/run \
+        -v "${REPO_ROOT}"/runner:/opt/src/runner \
+        -v "${REPO_ROOT}"/research:/opt/src/research \
         ${TENSORBOARD} ${AWS} ${DEBUG} \
         ${IMAGE} "${CMD[@]}"
 fi
