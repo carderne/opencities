@@ -14,7 +14,7 @@ STAC_IO.read_text_method = my_read_method
 STAC_IO.write_text_method = my_write_method
 
 
-class BenchmarkExperiment(rv.ExperimentSet):
+class Experiment(rv.ExperimentSet):
     def exp_experiment(
         self,
         experiment_id,
@@ -48,6 +48,7 @@ class BenchmarkExperiment(rv.ExperimentSet):
             "lr": 1e-4,  # set learning
             "one_cycle": True,  # use cyclic learning rate scheduler
             "model_arch": "resnet18",  # model architecture
+            "loss_fn": "JaccardLoss",
         }
 
         if test:
