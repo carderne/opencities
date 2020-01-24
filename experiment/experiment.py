@@ -47,13 +47,14 @@ class Experiment(rv.ExperimentSet):
             "debug": True,  # produce example chips to help with debugging
             "lr": 1e-4,  # set learning
             "one_cycle": True,  # use cyclic learning rate scheduler
-            "model_arch": "resnet18",  # model architecture
+            "model_arch": "resnet50",  # model architecture
             "loss_fn": "JaccardLoss",
+            "augmentors": ["RandomSizedCrop"],
         }
 
         if test:
-            train_ids = sample(train_ids, 2)
-            valid_ids = sample(valid_ids, 2)
+            train_ids = [("acc", "d41d81")]
+            valid_ids = [("acc", "a42435")]
 
             config["batch_size"] = 2
             config["num_epochs"] = 1
@@ -171,8 +172,8 @@ class Experiment(rv.ExperimentSet):
         test_scenes = [make_test_scene(item) for item in all_test_items]
 
         if test:
-            train_scenes = sample(train_scenes, 3)
-            valid_scenes = sample(valid_scenes, 3)
+            train_scenes = train_scenes[:3]
+            valid_scenes = valid_scenes[:3]
 
         # Create DataSet with train, validation and test scenes
         print("Building dataset config")
