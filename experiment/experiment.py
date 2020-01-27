@@ -7,7 +7,7 @@ from rastervision.backend.api import PYTORCH_SEMANTIC_SEGMENTATION
 from rastervision.utils.files import file_exists
 
 from .constants import TRAIN_IDS, VALID_IDS
-from .utils import str_to_bool, my_read_method, my_write_method
+from .utils import str_to_bool, my_read_method, my_write_method, read_list
 
 STAC_IO.read_text_method = my_read_method
 STAC_IO.write_text_method = my_write_method
@@ -22,6 +22,7 @@ class Experiment(rv.ExperimentSet):
         test_stac_uri,
         train_img_dir,
         test_img_dir,
+        test_exclude=None,
         test=False,
     ):
 
@@ -32,11 +33,15 @@ class Experiment(rv.ExperimentSet):
         train_stac = Catalog.from_file(train_stac_uri)
         test_stac = Catalog.from_file(test_stac_uri)
         all_test_items = test_stac.get_all_items()
+        if test_exclude and len(str(test_exclude)) > 2:
+            test_exclude = read_list(test_exclude)
+        else:
+            test_exclude = []
 
         # Configure chip creation
         chip_opts = {
             "window_method": "sliding",  # use sliding window method of to create chips
-            "stride": 300,  # slide over 300px to generate each new chip
+            "stride": 512,  # slide over 300px to generate each new chip
         }
 
         # Training config
@@ -48,7 +53,7 @@ class Experiment(rv.ExperimentSet):
             "one_cycle": True,  # use cyclic learning rate scheduler
             "model_arch": "resnet50",  # model architecture
             "loss_fn": "JaccardLoss",
-            "augmentors": ["RandomSizedCrop"],
+            # "augmentors": ["RandomSizedCrop"],
         }
 
         # Use smaller subset and quicker options for test runs
@@ -58,14 +63,18 @@ class Experiment(rv.ExperimentSet):
             config["batch_size"] = 2
             config["num_epochs"] = 1
             chip_opts = {"window_method": "random_sample", "chips_per_scene": 10}
-            all_test_items = [next(all_test_items) for _ in range(50)]
+            # all_test_items = [next(all_test_items) for _ in range(10)]
             experiment_id += "-TEST"
 
         classes = {"No Building": (2, "#ff00ff"), "Building": (1, "#e6194b")}
 
         # Create train, validation and test scenes
         print("Creating train scenes")
-        train_items = [train_stac.get_child(c).get_item(i) for c, i in train_ids]
+        train_items = [
+            train_stac.get_child(area).get_item(item)
+            for area, sub in train_ids.items()
+            for item, which in sub.items()
+        ]
         train_scenes = [
             make_train_scenes(item, train_stac_uri, train_img_dir)
             for item in train_items
@@ -73,7 +82,11 @@ class Experiment(rv.ExperimentSet):
         train_scenes = [item for sublist in train_scenes for item in sublist]
 
         print("Creating validation scenes")
-        valid_items = [train_stac.get_child(c).get_item(i) for c, i in valid_ids]
+        valid_items = [
+            train_stac.get_child(area).get_item(item)
+            for area, sub in valid_ids.items()
+            for item, which in sub.items()
+        ]
         valid_scenes = [
             make_train_scenes(item, train_stac_uri, train_img_dir)
             for item in valid_items
@@ -85,7 +98,12 @@ class Experiment(rv.ExperimentSet):
             valid_scenes = sample(valid_scenes, 30)
 
         print("Creating test scenes")
-        test_scenes = [make_test_scene(item, train_img_dir) for item in all_test_items]
+        test_scenes = [
+            make_test_scene(item, train_img_dir)
+            for item in all_test_items
+            if item.id not in test_exclude
+        ]
+        print(len(test_scenes))
 
         if test:
             train_scenes = train_scenes[:3]
@@ -95,6 +113,7 @@ class Experiment(rv.ExperimentSet):
         task = (
             rv.TaskConfig.builder(rv.SEMANTIC_SEGMENTATION)
             .with_classes(classes)
+            .with_chip_size(512)
             .with_chip_options(**chip_opts)
             .build()
         )
@@ -140,6 +159,8 @@ class Experiment(rv.ExperimentSet):
             .with_backend(backend)
             .with_dataset(dataset)
             .with_root_uri(root_uri)
+            .with_stats_analyzer()
+            .with_chip_key("chips-512")
             .with_custom_config(postprocess_config)
             .build()
         )
@@ -147,7 +168,7 @@ class Experiment(rv.ExperimentSet):
         return experiment
 
 
-def make_train_scenes(item, train_stac_uri, train_img_dir):
+def make_train_scenes(item, train_stac_uri, train_img_dir, which="all"):
     area = item.get_parent().id
     label_uri = join(
         dirname(train_stac_uri), area, f"{item.id}-labels", f"{item.id}.geojson"
@@ -157,12 +178,16 @@ def make_train_scenes(item, train_stac_uri, train_img_dir):
     images_remaining = True
     scenes = []
     while images_remaining:
+        if which != "all":
+            if i not in which:
+                continue
         raster_uri = join(train_img_dir, area, item.id, f"{item.id}_{i}.tif")
         if file_exists(raster_uri):
             raster_source = (
                 rv.RasterSourceConfig.builder(rv.RASTERIO_SOURCE)
                 .with_uri(raster_uri)
                 .with_channel_order([0, 1, 2])
+                .with_stats_transformer()
                 .build()
             )
             label_raster_source = (
@@ -197,6 +222,7 @@ def make_test_scene(item, test_img_dir):
         rv.RasterSourceConfig.builder(rv.RASTERIO_SOURCE)
         .with_uri(raster_uri)
         .with_channel_order([0, 1, 2])
+        .with_stats_transformer()
         .build()
     )
     scene = (

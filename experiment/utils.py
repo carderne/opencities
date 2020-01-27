@@ -36,3 +36,11 @@ def str_to_bool(x):
         else:
             raise ValueError(f"{x} is expected to be true or false")
     return x
+
+
+def read_list(file):
+    result = []
+    with open(file) as f:
+        result = f.readlines()
+    result = [l.strip() for l in result]
+    return result
