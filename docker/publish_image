@@ -4,7 +4,7 @@ ACCOUNT_ID=$(aws sts get-caller-identity --output text --query 'Account' --profi
 AWS_REGION="us-east-1"
 aws ecr get-login --no-include-email --region ${AWS_REGION} --profile rv | bash;
 
-IMAGE_NAME="raster-vision-pytorch-custom"
+IMAGE_NAME="raster-vision-pytorch"
 ECR_IMAGE="raster-vision-pytorch-custom"
 ECR_IMAGE_TAG="latest"
 
