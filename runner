@@ -6,7 +6,7 @@ elif [ -z $1 ]; then
     echo "No argument provided"
 elif [ $1 = "batch" ]; then
     rastervision -p batch run aws_batch -x -r -s 10 -e experiment.experiment \
-        analyze chip train predict eval bundle POSTPROCESS \
+        chip train predict POSTPROCESS \
         -a experiment_id $EXP_ID \
         -a root_uri s3://carderne-rv/ \
         -a train_stac_uri s3://drivendata-competition-building-segmentation/train_tier_1/catalog.json \
@@ -15,7 +15,7 @@ elif [ $1 = "batch" ]; then
         -a test_img_dir s3://drivendata-competition-building-segmentation/test/ \
         -a test_exclude $EXCLUDE
 elif [ $1 = "split" ]; then
-    rastervision -p batch run aws_batch -x -s 8 -e experiment.split \
+    rastervision -p batch run aws_batch -x -s 2 -e experiment.split \
         PREPROCESS \
         -a root_uri s3://carderne-rv/ \
         -a train_stac_uri s3://drivendata-competition-building-segmentation/train_tier_1/catalog.json \
@@ -24,11 +24,10 @@ elif [ $1 = "zip" ]; then
     rastervision -p batch run aws_batch -x -e experiment.zip \
         ZIP \
         -a experiment_id $EXP_ID \
-        -a root_uri s3://carderne-rv/ \
-        -a test_stac_uri /opt/data/test/catalog.json
+        -a root_uri s3://carderne-rv/
 elif [ $1 = "test" ]; then
     rastervision -p test run local -x -r -s 2 -e experiment.experiment \
-        analyze chip train predict eval bundle \
+        train predict \
         -a experiment_id  $EXP_ID \
         -a root_uri /opt/data/scratch/ \
         -a train_stac_uri /opt/data/train_tier_1/catalog.json \

@@ -16,8 +16,9 @@ def split_image(image_uri, split_dir):
         width = src.width
         height = src.height
 
-    win_size = 9000
+    win_size = 8704
     wins = []
+    print("Splitting image", image_uri)
     for c in list(range(0, width, win_size)):
         if c >= width:
             continue
@@ -36,6 +37,7 @@ def split_image(image_uri, split_dir):
 
     i = 0
     for win in wins:
+        print("Doing window", i, " params:   ", win)
         with rasterio.open(image_uri) as src:
             img = src.read(window=win)
             win_transform = src.window_transform(win)

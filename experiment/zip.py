@@ -9,7 +9,7 @@ ZIP = "ZIP"
 
 
 class ZipProcessed(rv.ExperimentSet):
-    def exp_zip(self, experiment_id, root_uri, test_stac_uri):
+    def exp_zip(self, experiment_id, root_uri):
         config = (
             rv.CommandConfig.builder(ZIP)
             .with_root_uri(root_uri)
