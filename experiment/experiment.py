@@ -46,19 +46,20 @@ class Experiment(rv.ExperimentSet):
 
         # Training config
         config = {
-            "batch_size": 8,  # run out of memory larger than 8
+            "batch_size": 32,  # run out of memory larger than 8
             "num_epochs": 6,  # (originally 6)
             "debug": True,  # produce example chips to help with debugging
             "lr": 1e-4,  # set max lr (originally 1e-4)
             "one_cycle": True,  # use cyclic learning rate scheduler
             "model_arch": "resnet50",  # model architecture
             "loss_fn": "JaccardLoss",
+            "augmentors": ["RandomSizedCrop"],
         }
 
         # Use smaller subset and quicker options for test runs
         if test:
-            train_ids = [("acc", "d41d81")]
-            valid_ids = [("acc", "a42435")]
+            train_ids = {"acc": {"d41d81": "all"}}
+            valid_ids = {"acc": {"a42435": "all"}}
             config["batch_size"] = 2
             config["num_epochs"] = 4
             chip_opts = {"window_method": "random_sample", "chips_per_scene": 4}
@@ -125,7 +126,7 @@ class Experiment(rv.ExperimentSet):
             rv.BackendConfig.builder(PYTORCH_SEMANTIC_SEGMENTATION)
             .with_task(task)
             .with_train_options(**config)
-            .with_pretrained_uri("s3://carderne-rv/train/benchmark1/model")
+            .with_pretrained_uri("s3://carderne-rv/train/attempt3/model")
             .build()
         )
         # Create DataSet with train, validation and test scenes
