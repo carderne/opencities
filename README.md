@@ -1,4 +1,5 @@
 # Open Cities AI Challenge
+A not very impressive attempt at the [DrivenData OpenCities AI Challenge](https://www.drivendata.org/competitions/60/building-segmentation-disaster-resilience/). Put together a deep learning model based on ResNet50 that did passably well (IoU = 70% or so), but limited training because AWS P3 instances aren't cheap! Luckily I won a consolation prize by writing a [blog post on responsible AI](https://rdrn.me/ethics-ai/)!
 
 Based on: [Open Cities AI Challenge Benchmark Model](https://github.com/azavea/open-cities-ai-challenge-benchmark-model)  
 AWS setup: [Raster Vision AWS repo](https://github.com/azavea/raster-vision-aws)
